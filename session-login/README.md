@@ -1,5 +1,5 @@
 ## 시작하기   
 ```shell
-npm i
-node app
+npm install --no-optional
+npm start
 ```

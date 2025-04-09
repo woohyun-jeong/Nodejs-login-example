@@ -24,9 +24,24 @@ nunjucks.configure('views', {
 
 
 app.get('/', (req, res) => {
-    const { user } = req.session;
-    if(user){
-        res.render('login', { user });
+    const authorizationHeader = req.headers.authorization;
+
+    if (!authorizationHeader) {
+        return res.status(400).send({ message: 'Authorization header missing' });
+    }
+    
+    const token = authorizationHeader.split(' ')[1];  // 'Bearer <token>' 형식에서 token만 추출
+    if (!token) {
+    return res.status(400).send({ message: 'Token missing' });
+    }
+
+    const { accessToken } = req.session;
+
+    // 토큰을 세션에 저장
+    req.session.accessToken = token;
+
+    if(accessToken){
+        res.render('login', { accessToken });
         return;
     }
     
